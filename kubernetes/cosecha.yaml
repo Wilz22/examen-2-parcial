@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cosecha
+  namespace: kubernetes-cosecha
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cosecha
+  template:
+    metadata:
+      labels:
+        app: cosecha
+    spec:
+      containers:
+        - name: cosecha
+          image: jcnazate/cosecha:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/cosecha_db"  # Cambiado para usar PostgreSQL
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "admin"  # Usuario de PostgreSQL
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "password"  # Contraseña de PostgreSQL
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: "update"
+            - name: SPRING_RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
+            - name: SPRING_RABBITMQ_USERNAME
+              value: "admin"
+            - name: SPRING_RABBITMQ_PASSWORD
+              value: "admin"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cosecha
+  namespace: kubernetes-cosecha
+spec:
+  selector:
+    app: cosecha
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30090
+  type: NodePort

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facturacion
+  namespace: kubernetes-cosecha
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: facturacion
+  template:
+    metadata:
+      labels:
+        app: facturacion
+    spec:
+      containers:
+        - name: facturacion
+          image: jcnazate/facturacion:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/facturacion_db"  # Cambiado para usar PostgreSQL
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "admin"  # Usuario de PostgreSQL
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "password"  # Contraseña de PostgreSQL
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: "update"
+            - name: SPRING_RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
+            - name: SPRING_RABBITMQ_USERNAME
+              value: "admin"
+            - name: SPRING_RABBITMQ_PASSWORD
+              value: "admin"
+            - name: CENTRAL_SERVICE_URL
+              value: "http://central-service:8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: facturacion
+  namespace: kubernetes-cosecha
+spec:
+  selector:
+    app: facturacion
+  ports:
+    - port: 80
+      targetPort: 8081
+      nodePort: 30091
+  type: NodePort
