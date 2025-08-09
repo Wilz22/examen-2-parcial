@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/inventario_db
     username: admin
-    password: admin123
+    password: admin
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
