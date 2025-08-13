@@ -61,6 +61,6 @@ Este proyecto implementa un sistema distribuido basado en microservicios para la
 - Cada microservicio es independiente y escalable.
 
 ## Autores
-- Jeremmy Varela
+- Jeremmy Varela -
 - Johanna Moncayo
 - Santiago Llumiquinga
